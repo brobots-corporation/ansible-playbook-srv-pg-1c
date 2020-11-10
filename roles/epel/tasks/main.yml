@@ -1,0 +1,12 @@
+---
+- name: yum add epel repository
+  yum:
+    name: epel-release
+    state: present
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf add epel repository
+  dnf:
+    name: epel-release
+    state: present
+  when: ansible_facts['pkg_mgr'] == "dnf"

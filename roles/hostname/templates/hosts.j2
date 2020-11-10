@@ -1,0 +1,6 @@
+# Ansible config and add
+127.0.0.1   localhost {{ server_hostname }}
+#################################################
+{% for server in groups["selfhosted"] %}
+{{ hostvars[server].ansible_host }}   {{ hostvars[server].server_hostname }}
+{% endfor %}

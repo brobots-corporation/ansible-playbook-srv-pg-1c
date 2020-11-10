@@ -1,0 +1,36 @@
+---
+- name: yum install list of necessary packages
+  yum:
+    name: firewalld
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf install list of necessary packages
+  dnf:
+    name: firewalld
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: enable service firewalld
+  systemd:
+    name: firewalld
+    enabled: yes
+
+- name: make sure a service firewalld is running
+  systemd:
+    state: started
+    name: firewalld
+
+- name: config 80 port firewalld
+  firewalld:
+    port: 80/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: config 22 port firewalld
+  firewalld:
+    port: 22/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled

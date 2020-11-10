@@ -1,0 +1,8 @@
+---
+yum_packages:
+  - htop
+  - iptraf
+  - lsof
+  - mtr
+  - iotop
+  - lnav

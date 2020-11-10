@@ -1,0 +1,17 @@
+---
+- name: add users
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell }}"
+    group: "admins"
+    append: yes
+  loop: "{{ users }}"
+  register: newuser
+
+- name: set authorized key for new users
+  authorized_key:
+    user: "{{ item.name }}"
+    state: present
+    key: "{{ lookup('file', '{{ ssh_keys_path }}/{{ item.key }}') }}"
+  loop: "{{ users }}"
+  when: newuser.changed

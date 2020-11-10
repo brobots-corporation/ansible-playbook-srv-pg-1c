@@ -1,0 +1,14 @@
+---
+remove_docker_packages:
+  - docker
+  - docker-client
+  - docker-client-latest
+  - docker-common
+  - docker-latest
+  - docker-latest-logrotate
+  - docker-logrotate
+  - docker-engine
+
+fedora_remove_docker_packages:
+  - docker-selinux
+  - docker-engine-selinux

@@ -1,0 +1,17 @@
+[selfhosted]
+srv1c server_hostname=srv1c ansible_host=10.211.55.16 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python
+srvdb server_hostname=srvdb ansible_host=10.211.55.15 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python
+
+[yandexcloud]
+
+[docker]
+
+[postgrespro]
+srvdb ansible_host=10.211.55.15 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python
+
+[app1c]
+srv1c ansible_host=10.211.55.16 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python
+
+[sshd_nopass]
+srv1c ansible_host=10.211.55.16 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python
+srvdb ansible_host=10.211.55.15 ansible_ssh_user=root ansible_ssh_pass=1234 ansible_python_interpreter=/usr/libexec/platform-python

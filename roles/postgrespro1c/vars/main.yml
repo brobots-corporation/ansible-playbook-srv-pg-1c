@@ -1,0 +1,4 @@
+---
+postgrespro_version: 12
+postgrespro_repo_url: "http://repo.postgrespro.ru/pgpro-{{ postgrespro_version }}/keys/centos.rpm"
+data_directory: "/sdata/pgpro/data"

@@ -1,0 +1,12 @@
+# Ansible config and add
+[main]
+gpgcheck=1
+installonly_limit=3
+clean_requirements_on_remove=True
+best=True
+skip_if_unavailable=False
+
+# Proxy settings
+proxy={{ proxy }}
+proxy_username={{ proxy_user }}
+proxy_password={{ proxy_pass }}

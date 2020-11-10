@@ -1,0 +1,14 @@
+---
+
+- name: set hostname
+  hostname:
+    name: "{{ server_hostname }}"
+
+- name: hosts file update
+  template: 
+    src: hosts.j2
+    dest: /etc/hosts
+    backup: yes
+    owner: root
+    group: root
+    mode: 'u=rw,g=r,o=r'

@@ -1,0 +1,17 @@
+---
+- name: add group admins
+  group:
+    name: admins
+    state: present
+
+- name: change permissions file sudoers
+  file:
+    path: /etc/sudoers
+    mode: 'u=rw,g=r,o=r'
+
+- lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%admins	ALL='
+    line: "%admins	ALL=(ALL)	NOPASSWD: ALL"
+    validate: /usr/sbin/visudo -cf %s

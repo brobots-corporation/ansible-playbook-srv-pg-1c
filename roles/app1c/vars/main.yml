@@ -1,0 +1,23 @@
+---
+
+app1c_directory: /opt/1C
+
+packages_for1c:
+  - fontconfig
+  - freetype
+  - libgsf
+  - unixODBC
+
+app1cversion: 8.3.17-1549
+app1carch: x86_64
+
+app1c_packages:
+  - 1C_Enterprise83-common-{{ app1cversion }}.{{ app1carch }}.rpm
+  - 1C_Enterprise83-common-nls-{{ app1cversion }}.{{ app1carch }}.rpm
+  - 1C_Enterprise83-server-{{ app1cversion }}.{{ app1carch }}.rpm
+  - 1C_Enterprise83-server-nls-{{ app1cversion }}.{{ app1carch }}.rpm
+  # - 1C_Enterprise83-ws-{{ app1cversion }}.{{ app1carch }}.rpm
+  # - 1C_Enterprise83-ws-nls-{{ app1cversion }}.{{ app1carch }}.rpm
+  # - 1C_Enterprise83-crs-{{ app1cversion }}.{{ app1carch }}.rpm
+
+app1c_packages_pattern: 1C_Enterprise83*

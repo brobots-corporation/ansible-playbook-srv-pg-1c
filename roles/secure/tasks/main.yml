@@ -1,0 +1,14 @@
+---
+- name: enable SELinux
+  selinux:
+    policy: targeted
+    state: enforcing
+
+- name: get stats of the /opt/lynis folder
+  stat:
+    path: "/opt/lynis"
+  register: path_lynis
+
+- name: install lynis
+  shell: 'git clone https://github.com/CISOfy/lynis /opt/lynis'
+  when: path_lynis.stat.isdir is not defined

@@ -1,0 +1,15 @@
+---
+- name: yum install the latest version of langpack
+  yum:
+    name: "{{ langpack }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf install the latest version of langpack
+  dnf:
+    name: "{{ langpack }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: set as default locale
+  command: "localectl set-locale LANG={{ LANG }}"

@@ -1,0 +1,9 @@
+---
+yum_packages:
+  - curl
+  - vim
+  - mc
+  - git
+  - python3
+  - zsh
+  - make

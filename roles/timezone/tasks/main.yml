@@ -1,0 +1,8 @@
+---
+- name: Set timezone
+  timezone:
+    name: "{{ tz }}"
+
+- debug:
+    msg: "Set timezone: {{ tz }}"
+    verbosity: 1

@@ -1,0 +1,65 @@
+---
+- name: dnf install dnf-plugins-core
+  dnf:
+    name: dnf-plugins-core
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: centos dnf docker add-repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+  when: ansible_facts['distribution'] == "CentOS"
+
+- name: fedora dnf docker add-repo
+  get_url:
+    url: https://download.docker.com/linux/fedora/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+  when: ansible_facts['distribution'] == "Fedora"
+  
+- name: dnf install docker engine
+  dnf:
+    name: "{{ docker_packages }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: enable service docker
+  systemd:
+    name: docker
+    enabled: yes
+
+- name: make sure a service docker is running
+  systemd:
+    state: started
+    name: docker
+
+- name: enable masquerade for containers
+  firewalld:
+    masquerade: yes
+    state: enabled
+    permanent: true
+
+- name: install the latest version of ctop (https://github.com/bcicen/ctop)
+  block:
+
+    - name: get ctop latest version
+      shell: curl --silent https://api.github.com/repos/bcicen/ctop/releases/latest | grep tag_name | grep -o '[0-9]*\.[0-9]*\.[0-9]*'
+      args:
+        warn: false
+      register: latest_release
+
+    - name: download ctop latest version
+      get_url:
+        url: https://github.com/bcicen/ctop/releases/download/v{{ latest_release.stdout }}/ctop-{{ latest_release.stdout }}-linux-amd64
+        dest: /usr/local/bin/ctop
+
+    - name: chmod ctop
+      file:
+        path: /usr/local/bin/ctop
+        mode: +x
+
+    - name: create a symbolic link to ctop
+      file:
+        src: /usr/local/bin/ctop
+        dest: /usr/bin/ctop
+        state: link

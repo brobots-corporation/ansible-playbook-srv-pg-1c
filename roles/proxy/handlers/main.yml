@@ -1,0 +1,3 @@
+---
+- name: apply proxy settings environment
+  shell: source /etc/environment

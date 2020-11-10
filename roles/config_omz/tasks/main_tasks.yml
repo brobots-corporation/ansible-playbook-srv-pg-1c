@@ -1,0 +1,33 @@
+---
+- name: get user homedir
+  shell: echo $HOME
+  become: yes
+  become_method: su
+  become_user: "{{ item.name }}"
+  register: user_home
+
+- name: config THEME oh-my-zsh
+  lineinfile:
+    path: "{{ user_home.stdout }}/.zshrc"
+    regexp: '^ZSH_THEME='
+    line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+
+- name: config HISTORY oh-my-zsh
+  lineinfile:
+    path: "{{ user_home.stdout }}/.zshrc"
+    regexp: '^# HIST_STAMPS='
+    line: 'HIST_STAMPS="yyyy-mm-dd"'
+
+- name: config plugins oh-my-zsh
+  lineinfile:
+    path: "{{ user_home.stdout }}/.zshrc"
+    regexp: '^plugins='
+    line: 'plugins=(git copyfile docker docker-compose zsh-autosuggestions zsh-syntax-highlighting)'
+
+- name: config alias oh-my-zsh
+  lineinfile:
+    path: "{{ user_home.stdout }}/.zshrc"
+    insertafter: '# Example aliases'
+    regexp: '^alias cat='
+    line: "alias cat='{{ install_bat_path }}/bat --theme GitHub'"
+

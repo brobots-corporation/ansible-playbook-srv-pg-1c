@@ -1,0 +1,48 @@
+---
+- name: get stats of the .oh-my-zsh folder
+  stat:
+    path: "/home/{{ item.name }}/.oh-my-zsh"
+  register: path_omz
+
+- name: install oh-my-zsh
+  shell: 'sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended'
+  become: yes
+  become_method: su
+  become_user: "{{ item.name }}"
+  when: path_omz.stat.isdir is not defined
+
+- name: get stats of the zsh-autosuggestions folder
+  stat:
+    path: "/home/{{ item.name }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+  register: path_zshas
+
+- name: install zsh-autosuggestions
+  shell: "git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+  become: yes
+  become_method: su
+  become_user: "{{ item.name }}"
+  when: path_zshas.stat.isdir is not defined
+
+- name: get stats of the zsh-syntax-highlighting folder
+  stat:
+    path: "/home/{{ item.name }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+  register: path_zshsh
+
+- name: install zsh-syntax-highlighting
+  shell: "git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+  become: yes
+  become_method: su
+  become_user: "{{ item.name }}"
+  when: path_zshsh.stat.isdir is not defined
+
+- name: get stats of the powerlevel10k folder
+  stat:
+    path: "/home/{{ item.name }}/.oh-my-zsh/custom/themes/powerlevel10k"
+  register: path_zshpl
+
+- name: install powerlevel10k
+  shell: "git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k"
+  become: yes
+  become_method: su
+  become_user: "{{ item.name }}"
+  when: path_zshpl.stat.isdir is not defined

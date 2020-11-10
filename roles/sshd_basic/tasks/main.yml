@@ -1,0 +1,12 @@
+---
+- name: sshd configuration file update
+  template: 
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    backup: yes
+    owner: root
+    group: root
+    mode: '0600'
+    validate: /usr/sbin/sshd -t -f %s
+  notify:
+    - restart sshd

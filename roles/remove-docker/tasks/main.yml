@@ -1,0 +1,12 @@
+---
+- name: centos and fedora uninstall old docker packages
+  dnf:
+    name: "{{ remove_docker_packages }}"
+    state: absent
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: fedora uninstall additional old docker packages
+  dnf:
+    name: "{{ fedora_remove_docker_packages }}"
+    state: absent
+  when: ansible_facts['distribution'] == "Fedora"

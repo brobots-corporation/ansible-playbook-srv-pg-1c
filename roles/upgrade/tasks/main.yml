@@ -1,0 +1,12 @@
+---
+- name: yum upgrade all packages
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf upgrade all packages
+  dnf:
+    name: "*"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"

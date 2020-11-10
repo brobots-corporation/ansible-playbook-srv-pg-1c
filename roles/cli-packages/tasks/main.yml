@@ -1,0 +1,61 @@
+---
+- name: yum install list of necessary packages
+  yum:
+    name: "{{ yum_packages }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf install list of necessary packages
+  dnf:
+    name: "{{ yum_packages }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: install the latest version of bat (https://github.com/sharkdp/bat)
+  block:
+    - name: get bat latest version
+      shell: curl --silent https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name | grep -o '[0-9]*\.[0-9]*\.[0-9]*'
+      args:
+        warn: false
+      register: latest_release
+    - name: download bat latest version and unarchive
+      unarchive:
+        src: https://github.com/sharkdp/bat/releases/download/v{{ latest_release.stdout }}/bat-v{{ latest_release.stdout }}-x86_64-unknown-linux-musl.tar.gz
+        dest: /tmp
+        remote_src: yes
+    - name: copy bat to point
+      copy:
+        src: /tmp/bat-v{{ latest_release.stdout }}-x86_64-unknown-linux-musl/
+        dest: "{{ install_bat_path }}"
+        mode: "u+rx,g+rx,o+rx"
+        remote_src: yes
+    - name: add bat alias
+      lineinfile:
+        path: ~/.bashrc
+        insertafter: 'mv'
+        regexp: '^alias cat='
+        line: "alias cat='{{ install_bat_path }}/bat --theme GitHub'"
+    - name: find bat temporary files
+      find:
+        paths: /tmp
+        file_type: any
+        patterns: bat*
+      register: bat_files_delete      
+    - name: delete bat temporary files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ bat_files_delete.files }}"
+  when: ansible_facts['distribution'] == "CentOS"
+
+- name: install the latest version of bat (https://github.com/sharkdp/bat)
+  block:
+    - yum:
+        name: bat
+        state: latest
+    - lineinfile:
+        path: ~/.bashrc
+        insertafter: 'mv'
+        regexp: '^alias cat='
+        line: "alias cat='{{ install_bat_path }}/bat --theme GitHub"
+  when: ansible_facts['distribution'] == "Fedora"

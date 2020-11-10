@@ -1,0 +1,12 @@
+---
+users: 
+  - { name: test,
+      shell: "/bin/zsh",
+      key: test_key.pub}
+
+
+ssh_keys_path: "ssh_pubkeys"
+
+langpack: "langpacks-en"
+LANG: "en_US.UTF-8"
+install_bat_path: "/usr/local/bin/bat"

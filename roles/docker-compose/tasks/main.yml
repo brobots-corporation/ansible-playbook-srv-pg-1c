@@ -1,0 +1,25 @@
+---
+- name: install the latest version of docker-compose
+  block:
+
+  - name: get docker-compose latest version
+    shell: curl --silent https://api.github.com/repos/docker/compose/releases/latest | grep tag_name | grep -o '[0-9]*\.[0-9]*\.[0-9]*'
+    args:
+        warn: false
+    register: latest_release
+
+  - name: install docker-compose
+    get_url:
+      url: "https://github.com/docker/compose/releases/download/{{ latest_release.stdout }}/docker-compose-linux-x86_64"
+      dest: /usr/local/bin/docker-compose
+
+  - name: chmod docker-compose
+    file:
+      path: /usr/local/bin/docker-compose
+      mode: +x
+
+  - name: create a symbolic link to docker-compose
+    file:
+      src: /usr/local/bin/docker-compose
+      dest: /usr/bin/docker-compose
+      state: link

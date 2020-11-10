@@ -1,0 +1,12 @@
+---
+- name: yum install list of necessary packages
+  yum:
+    name: "{{ yum_packages }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf install list of necessary packages
+  dnf:
+    name: "{{ yum_packages }}"
+    state: latest
+  when: ansible_facts['pkg_mgr'] == "dnf"

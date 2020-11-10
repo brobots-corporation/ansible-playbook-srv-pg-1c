@@ -1,0 +1,58 @@
+---
+- name: config 5432 port firewalld
+  firewalld:
+    port: 5432/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: get stats of the posgrespro data_directory folder
+  stat:
+    path: "{{ data_directory }}"
+  register: path_data_pgpro
+
+- name: block of tasks for install postgrespro
+  block:
+
+  - name: yum install postgrespro repo
+    yum:
+      name: "http://repo.postgrespro.ru/pgpro-{{ postgrespro_version }}/keys/centos.rpm"
+      state: present
+      disable_gpg_check: yes
+    when: ansible_facts['pkg_mgr'] == "yum"
+  
+  - name: dnf install postgrespro repo
+    dnf:
+      name: "http://repo.postgrespro.ru/pgpro-{{ postgrespro_version }}/keys/centos.rpm"
+      state: present
+      disable_gpg_check: yes
+    when: ansible_facts['pkg_mgr'] == "dnf"
+
+  - name: yum install postgrespro
+    yum:
+      name: "postgrespro-std-{{ postgrespro_version }}-contrib"
+      state: latest
+    when: ansible_facts['pkg_mgr'] == "yum"
+
+  - name: dnf install postgrespro
+    dnf:
+      name: "postgrespro-std-{{ postgrespro_version }}-contrib"
+      state: latest
+    when: ansible_facts['pkg_mgr'] == "dnf"
+
+  - name: initialize postgrespro database
+    shell: "/opt/pgpro/std-12/bin/pg-setup initdb --tune=1c -D {{ data_directory }}"
+    args:
+      warn: false
+
+  - name: enable service postgrespro
+    shell: /opt/pgpro/std-12/bin/pg-setup service enable
+    args:
+      warn: false
+
+  - name: start service postgrespro
+    shell: /opt/pgpro/std-12/bin/pg-setup service start
+    args:
+      warn: false
+  
+  when: path_data_pgpro.stat.isdir is not defined

@@ -1,0 +1,82 @@
+---
+
+- name: config 1540-1541 port firewalld
+  firewalld:
+    port: 1540-1541/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: config 1560-1590 port firewalld
+  firewalld:
+    port: 1560-1590/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: get stats of the srv1cv8 install directory
+  stat:
+    path: "{{ app1c_directory }}"
+  register: path_1c
+
+- name: block of tasks for install 1c server
+  block: 
+
+  - name: yum install list of necessary for 1c packages
+    yum:
+      name: "{{ packages_for1c }}"
+      state: latest
+    when: ansible_facts['pkg_mgr'] == "yum"
+
+  - name: dnf install list of necessary for 1c packages
+    dnf:
+      name: "{{ packages_for1c }}"
+      state: latest
+    when: ansible_facts['pkg_mgr'] == "dnf"
+
+  - name: copy app to remote server and unarchive
+    unarchive:
+      src: rpm64_8_3_17_1549.tar.gz
+      dest: /tmp
+      mode: "u+r,g+r,o+r"
+
+  - name: yum install list of 1c packages
+    yum:
+      name: "/tmp/{{ item }}"
+      state: latest
+      disable_gpg_check: yes
+    loop: "{{ app1c_packages }}"
+    when: ansible_facts['pkg_mgr'] == "yum"
+
+  - name: dnf install list of 1c packages
+    dnf:
+      name: "/tmp/{{ item }}"
+      state: latest
+      disable_gpg_check: yes
+    loop: "{{ app1c_packages }}"
+    when: ansible_facts['pkg_mgr'] == "dnf"
+
+  - name: find temporary 1c package files
+    find:
+      paths: /tmp
+      file_type: any
+      patterns: "{{ app1c_packages_pattern }}"
+    register: app1cpack_files_delete
+       
+  - name: delete temporary files
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    loop: "{{ app1cpack_files_delete.files }}"
+
+  - name: enable service srv1cv83
+    systemd:
+      name: srv1cv83
+      enabled: yes
+
+  - name: start service srv1cv83
+    systemd:
+      name: srv1cv83
+      state: started
+
+  when: path_1c.stat.isdir is not defined

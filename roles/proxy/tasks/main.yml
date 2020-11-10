@@ -1,0 +1,39 @@
+---
+- name: yum.conf update
+  template: 
+    src: dnf_config.j2
+    dest: /etc/yum.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  when: ansible_facts['pkg_mgr'] == "yum"
+
+- name: dnf.conf update
+  template: 
+    src: dnf_config.j2
+    dest: /etc/dnf/dnf.conf
+    backup: yes
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  when: ansible_facts['pkg_mgr'] == "dnf"
+
+- name: shell proxy update
+  template: 
+    src: shell_proxy.j2
+    dest: /etc/profile.d/http_proxy.sh
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+
+- name: nonshell proxy update
+  template: 
+    src: env_proxy.j2
+    dest: /etc/environment
+    backup: yes
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  notify:
+    - apply proxy settings environment

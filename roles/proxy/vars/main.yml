@@ -1,0 +1,5 @@
+---
+proxy: "http://yourproxy:8080/"
+proxy_user: "user"
+proxy_pass: "pass"
+proxy_url: "http://user:pass@yourproxy:8080"
