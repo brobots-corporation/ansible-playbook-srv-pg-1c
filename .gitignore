@@ -12,7 +12,7 @@
 *ansible.log
 
 # Игнорировать публичные ключи в папке
-ssh_pubkeys/**
+ssh_pubkeys/*.pub
 
 # Игнорировать файл инвентори
 hosts
